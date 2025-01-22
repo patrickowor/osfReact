@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 /* eslint-disable react/prop-types */
-export function Login ({setIsLoggedIn}){
+export function Login ({setIsLoggedIn, setUserAuth}){
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setIsLoading] = useState(false)
@@ -9,15 +9,34 @@ export function Login ({setIsLoggedIn}){
         if(loading) return ;
         setIsLoading(!loading)
         e.preventDefault();
-        // form submittion goes here
-        const res = await fetch ("https://label-box.onrender.com/login", {method: "POST", body : JSON.stringify({email, password})})
 
-        if(res.ok){
-            console.log(await res.json())
-            setIsLoggedIn();
-        } else {
-            console.log('Error', await res.json(), res.status)
-        }
+        console.log({email, password})
+        // form submittion goes here 
+        // 
+           try {
+                const res = await fetch (
+                    "http://192.168.1.73:5007/login",
+                    {
+                        method: "post", 
+                        body : JSON.stringify({email, password}),
+                        headers: {
+                            'Content-Type': 'application/json' // Set the content type to JSON
+                        },
+                    
+                    })
+
+                if(res.ok){
+                    const response = await res.json()
+                    setUserAuth(response.token)
+                    // setUserAuth('i am the token')
+                    setIsLoggedIn();
+                } else {
+                    console.log('Error', await res.json(), res.status)
+                }                
+            } catch(err)  {
+                console.log(err)
+            }
+
         
     }
 
@@ -35,8 +54,44 @@ export function Login ({setIsLoggedIn}){
 } 
 
 
-export function Dashboard (){
-    return <>welcome to the dashboard oh great lord</>
+export function Dashboard ({userAuth, changeLoginState}){
+
+    const [username, setUserName] = useState('Guest')
+
+    useEffect(()=>{
+        (async ()=>{
+            try {
+                const res = await fetch (
+                    "http://192.168.1.73:5007/user",
+                    {
+                        method: "get", 
+                        headers: {
+                            'Content-Type': 'application/json' ,
+                            Authorization : `Bearer ${userAuth}`
+                        },
+                    
+                    })
+
+                if(res.ok){
+                    
+                    const response = await res.json()
+                    setUserName(response.name)
+                } else {
+                    changeLoginState()
+                    console.log('Error', await res.json(), res.status)
+                }                
+            } catch(err)  {
+                changeLoginState()
+                console.log(err)
+            }
+
+        })()
+    } , [userAuth, changeLoginState])
+    return <main>
+        <div className="login-container">
+            <h6>welcome {username}</h6>
+        </div>
+    </main>
 }
 
 
