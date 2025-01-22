@@ -1,6 +1,7 @@
 const Footer = () => {
     return (<footer>
-        all hail the greatest programmer <strong>OWOR PATRICK I</strong> he is the begining, the end the cause the bug and the solution the circle of all source code 
+
+         welcome to <div style={{display: 'inline', color: 'red', paddingInline: '5px'}}>Osf Training</div> at <div style={{color: 'green', display: 'inline'}}>Exquitec, ijebu ode</div>
       </footer>)
 }
 

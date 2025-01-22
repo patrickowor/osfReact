@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import buttonStyles from '../styles/button.module.css'
 /* eslint-disable react/prop-types */
 export function Login ({setIsLoggedIn, setUserAuth}){
     const [email, setEmail] = useState('')
@@ -10,32 +11,32 @@ export function Login ({setIsLoggedIn, setUserAuth}){
         setIsLoading(!loading)
         e.preventDefault();
 
-        console.log({email, password})
-        // form submittion goes here 
-        // 
-           try {
-                const res = await fetch (
-                    "http://192.168.1.73:5007/login",
-                    {
-                        method: "post", 
-                        body : JSON.stringify({email, password}),
-                        headers: {
-                            'Content-Type': 'application/json' // Set the content type to JSON
-                        },
+        return;
+        // //form submittion goes here 
+         
+        //    try {
+        //         const res = await fetch (
+        //             "http://192.168.1.73:5007/login",
+        //             {
+        //                 method: "post", 
+        //                 body : JSON.stringify({email, password}),
+        //                 headers: {
+        //                     'Content-Type': 'application/json' // Set the content type to JSON
+        //                 },
                     
-                    })
+        //             })
 
-                if(res.ok){
-                    const response = await res.json()
-                    setUserAuth(response.token)
-                    // setUserAuth('i am the token')
-                    setIsLoggedIn();
-                } else {
-                    console.log('Error', await res.json(), res.status)
-                }                
-            } catch(err)  {
-                console.log(err)
-            }
+        //         if(res.ok){
+        //             const response = await res.json()
+        //             setUserAuth(response.token)
+        //             // setUserAuth('i am the token')
+        //             setIsLoggedIn();
+        //         } else {
+        //             console.log('Error', await res.json(), res.status)
+        //         }                
+        //     } catch(err)  {
+        //         console.log(err)
+        //     }
 
         
     }
@@ -46,9 +47,9 @@ export function Login ({setIsLoggedIn, setUserAuth}){
             <form>
                 <input type="text" placeholder="Username" value={email} onChange={(e)=> setEmail(e.target.value)  } required  />
                 <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                <button onClick={handleSubmit}>{loading? 'Loading':  'Login'}</button>
+                <button className={`${buttonStyles.buttonGreen} ${buttonStyles.buttonRed}`} onClick={handleSubmit} >{loading? 'Loading':  'Login'}</button>
             </form>
-            <a href="#" className="register-link">Don&apos;t have an account? Register</a>
+            <a href="#" className="register-link"  >Don&apos;t have an account? Register</a>
         </div>
       </main>)
 } 
