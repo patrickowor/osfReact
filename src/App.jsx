@@ -1,18 +1,31 @@
 import './App.css'
-import Header from "./components/header" 
-import  {Login, Dashboard} from "./components/body"
-import Footer from './components/footer'
-import { useState } from 'react'
+import Home from './pages/Home'
+import Login from './pages/Login'
+import { useState  } from 'react'
+import AuthContext from './context'
+import {BrowserRouter, StaticRouter, HashRouter, Route, Routes} from "react-router";
+
+
 
 function App() {
   const [isLoggedin, setIsLoggedIn] = useState(false)
-  const changeLoginState = () => setIsLoggedIn(!isLoggedin)
   const [userAuth, setUserAuth] = useState(null)
-  return (<>
-    <Header checkLoggedIn={isLoggedin} setIsLoggedIn={changeLoginState} />
-    <>{isLoggedin ? <Dashboard userAuth={userAuth} changeLoginState={changeLoginState}  />: <Login setIsLoggedIn={changeLoginState}  setUserAuth={setUserAuth}/>}</>
-    <Footer />
-  </>)
+  const changeLoginState = () => setIsLoggedIn( !isLoggedin)
+  
+  return <>
+      <AuthContext.Provider value={{isLoggedin,changeLoginState, userAuth, setUserAuth }}>
+        <BrowserRouter >
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/home" element={<Home />} />
+          </Routes>
+        </BrowserRouter>
+        
+      </AuthContext.Provider>
+      
+  </>
+  
+
 }
 
 export default App

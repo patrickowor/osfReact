@@ -1,7 +1,15 @@
 import reactsvg from '../assets/react.svg'
+import { useContext } from 'react'
+import AuthContext from '../context'
+import { Link, useNavigate } from 'react-router'
 
-// eslint-disable-next-line react/prop-types
-export default function Header({checkLoggedIn, setIsLoggedIn}) {
+export default function Header() {
+    const { 
+      isLoggedin : checkLoggedIn,
+      changeLoginState : setIsLoggedIn  
+    } = useContext(AuthContext)
+    const navigate= useNavigate()
+
     return (    <header>
         <div>
           <img src={reactsvg} alt="mylogo" />
@@ -9,13 +17,13 @@ export default function Header({checkLoggedIn, setIsLoggedIn}) {
         <div>
           <ul>
             {
-                checkLoggedIn ? <li onClick={setIsLoggedIn}>logout</li>  : <>
-                    <li><a href="">signup</a></li>
-                    <li><a href="">login</a></li>
+                checkLoggedIn ? <li onClick={() => { navigate('/');setIsLoggedIn();}}>logout</li>  : <>
+                    <li><Link to="/">signup</Link></li>
+                    <li><Link to="/">login</Link></li>
                 </>
             }
 
-            <li><a href="">aboutus</a> </li>
+            <li><Link to="/">aboutus</Link> </li>
           </ul>
         </div>
       </header>)

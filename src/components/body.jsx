@@ -1,7 +1,18 @@
 import { useEffect, useState } from "react";
 import buttonStyles from '../styles/button.module.css'
-/* eslint-disable react/prop-types */
-export function Login ({setIsLoggedIn, setUserAuth}){
+import { useContext } from 'react'
+import AuthContext from '../context'
+import { useNavigate } from "react-router";
+
+export function Login (){
+
+    const { 
+        setUserAuth,
+        changeLoginState : setIsLoggedIn  
+      } = useContext(AuthContext)
+
+    const navigate = useNavigate()
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setIsLoading] = useState(false)
@@ -11,32 +22,31 @@ export function Login ({setIsLoggedIn, setUserAuth}){
         setIsLoading(!loading)
         e.preventDefault();
 
-        return;
-        // //form submittion goes here 
+        //form submittion goes here 
          
-        //    try {
-        //         const res = await fetch (
-        //             "http://192.168.1.73:5007/login",
-        //             {
-        //                 method: "post", 
-        //                 body : JSON.stringify({email, password}),
-        //                 headers: {
-        //                     'Content-Type': 'application/json' // Set the content type to JSON
-        //                 },
+           try {
+                const res = await fetch (
+                    "http://192.168.1.73:5007/login",
+                    {
+                        method: "post", 
+                        body : JSON.stringify({email, password}),
+                        headers: {
+                            'Content-Type': 'application/json' // Set the content type to JSON
+                        },
                     
-        //             })
+                    })
 
-        //         if(res.ok){
-        //             const response = await res.json()
-        //             setUserAuth(response.token)
-        //             // setUserAuth('i am the token')
-        //             setIsLoggedIn();
-        //         } else {
-        //             console.log('Error', await res.json(), res.status)
-        //         }                
-        //     } catch(err)  {
-        //         console.log(err)
-        //     }
+                if(res.ok){
+                    const response = await res.json()
+                    setUserAuth(response.token)
+                    setIsLoggedIn();
+                    navigate("/home")
+                } else {
+                    console.log('Error', await res.json(), res.status)
+                }                
+            } catch(err)  {
+                console.log(err)
+            }
 
         
     }
@@ -55,8 +65,12 @@ export function Login ({setIsLoggedIn, setUserAuth}){
 } 
 
 
-export function Dashboard ({userAuth, changeLoginState}){
-
+export function Dashboard (){
+    const { 
+        userAuth,
+        changeLoginState,  
+      } = useContext(AuthContext)
+    const  navigate = useNavigate()
     const [username, setUserName] = useState('Guest')
 
     useEffect(()=>{
@@ -74,20 +88,21 @@ export function Dashboard ({userAuth, changeLoginState}){
                     })
 
                 if(res.ok){
-                    
                     const response = await res.json()
                     setUserName(response.name)
                 } else {
                     changeLoginState()
+                    navigate("/")
                     console.log('Error', await res.json(), res.status)
                 }                
             } catch(err)  {
                 changeLoginState()
+                navigate("/")
                 console.log(err)
             }
 
         })()
-    } , [userAuth, changeLoginState])
+    } , [userAuth, changeLoginState, navigate])
     return <main>
         <div className="login-container">
             <h6>welcome {username}</h6>
